@@ -1,13 +1,13 @@
 package com.aleksandar.jwtspringsecurity.service;
 
+import com.aleksandar.jwtspringsecurity.db.VirtualDatabase;
 import com.aleksandar.jwtspringsecurity.model.JwtUser;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.Map;
 
 /**
  * @author Aleksandar on 28.10.2019
@@ -17,7 +17,8 @@ import java.util.Collections;
 public class CustomUserDetialsService implements UserDetailsService {
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return new JwtUser("aleksandar", "password", Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Map<String, JwtUser> dbUsers = VirtualDatabase.getDbUsers();
+        return dbUsers.get(username);
     }
 }

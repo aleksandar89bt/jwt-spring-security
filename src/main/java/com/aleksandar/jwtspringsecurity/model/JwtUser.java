@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Aleksandar on 28.10.2019
@@ -17,10 +18,16 @@ public class JwtUser implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> roles;
 
-    public JwtUser(String username, String password, List<SimpleGrantedAuthority> roles) {
+    public JwtUser(String username, String password, Collection<? extends GrantedAuthority> roles) {
         this.username = username;
         this.password = password;
         this.roles = roles;
+    }
+
+    public List<String> getRoles(){
+        return roles.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
     }
 
     @Override

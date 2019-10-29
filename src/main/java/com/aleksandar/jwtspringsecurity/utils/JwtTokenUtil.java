@@ -1,5 +1,6 @@
 package com.aleksandar.jwtspringsecurity.utils;
 
+import com.aleksandar.jwtspringsecurity.model.JwtUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,6 +22,9 @@ public class JwtTokenUtil {
 
     @Value("${jwt.secret}")
     private String secret;
+    @Value("${jwt.expiration}")
+    private Long expirationTime;
+    private static final String ROLES = "roles";
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
         Claims claims = extractAllClaims(token);
@@ -54,13 +58,15 @@ public class JwtTokenUtil {
 
     public String createToken(Map<String, Object> claims, String subject){
         return Jwts.builder().setClaims(claims).setSubject(subject)
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*10))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime*1000))
+                .setIssuedAt(new Date())
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
     public String generateToken(UserDetails userDetails){
         Map<String, Object> claims = new HashMap<>();
+        claims.put(ROLES, ((JwtUser)userDetails).getRoles());
         return createToken(claims, userDetails.getUsername());
     }
 }

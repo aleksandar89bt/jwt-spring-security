@@ -11,9 +11,21 @@ import javax.annotation.security.RolesAllowed;
 @RestController
 public class HomeController {
 
-    @GetMapping("/home")
+    @GetMapping("/admin")
     @RolesAllowed("ROLE_ADMIN")
-    public String home(){
-        return "This is home page";
+    public String homeAdmin(){
+        return "This is home page for admin";
+    }
+
+    @GetMapping("/user")
+    @RolesAllowed("ROLE_USER")
+    public String homeUser(){
+        return "This is home page for user";
+    }
+
+    @GetMapping("/viewer")
+    @RolesAllowed("ROLE_VIEWER")
+    public String homeViewer(){
+        return "This is home page for viewer";
     }
 }
